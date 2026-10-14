@@ -2,6 +2,9 @@ import { cleanInput } from "./repl.js";
 import { describe, expect, test } from "vitest";
 
 
+import { Cache } from "./pokecache.js";
+//import { test, expect } from "vitest";
+
 
 describe.each([
     {
