@@ -23,7 +23,12 @@ export async function startREPL(state: State) {
     }
 
     try {
-      await cmd.callback(state);
+      if (commandName === "explore"){
+        await cmd.callback(state, words[1]);
+      }
+      else{
+        await cmd.callback(state);
+      }
     } catch (e) {
       // log any error
       console.log(e);
