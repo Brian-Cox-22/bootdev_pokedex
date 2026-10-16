@@ -12,6 +12,7 @@ export class PokeAPI {
     this.cache.stopReapLoop();
   }
 
+
   async fetchLocations(pageURL?: string): Promise<ShallowLocations> {
     const url = pageURL || `${PokeAPI.baseURL}/location-area`;
 
@@ -84,6 +85,32 @@ export class PokeAPI {
       );
     }
   }
+
+  async pokemonAround(location_url: string): Promise<string[]> {
+     let cached = this.cache.get<Location>(location_url);
+    if (!cached) {
+      try{
+      const loc_resp = await fetch(location_url);
+      if (!loc_resp.ok) {
+        throw new Error(`${loc_resp.status} ${loc_resp.statusText}`);
+      }
+
+      const location: Location = await loc_resp.json();
+      this.cache.add(location_url, location);
+      cached = this.cache.get<Location>(location_url);
+      if (!cached){
+        throw new Error(`Issue caching ${location_url}`);
+      }
+    }
+    catch (e) {
+      throw new Error(
+        `Error fetching location '${location_url}': ${(e as Error).message}`,
+      );
+    }
+      
+    }
+    return cached.pokemon_encounters.map((e) => e.pokemon.name);
+  };
 }
 
 export type ShallowLocations = {
