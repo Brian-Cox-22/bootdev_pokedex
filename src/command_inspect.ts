@@ -1,26 +1,25 @@
 import { State } from "./state.js";
 
-export async function commandInspect(state: State, pokemon: string){
-    const pokedata = state.caughtPokemon[pokemon];
-    if (!pokedata){
-        console.log(`You have not yet caught a ${pokemon}!`);
-        return;
-    }
-    console.log(`name: ${pokedata.name}`);
-    console.log(`height: ${pokedata.height}`);
-    console.log(`weight: ${pokedata.weight}`);
+export async function commandInspect(state: State, ...args: string[]) {
+  if (args.length !== 1) {
+    throw new Error("you must provide a pokemon name");
+  }
 
-    // gotta fix these now
+  const name = args[0];
+  const pokemon = state.caughtPokemon[name];
+  if (!pokemon) {
+    throw new Error("you have not caught that pokemon");
+  }
 
-    //console.log(`stats: ${pokedata.stats}`);
-    console.log("Stats:")
-    for (let stat of pokedata.stats){
-        console.log(`    -${stat.stat.name}: ${stat.base_stat}`);
-    }
-
-    //console.log(`Types: ${pokedata.types}`);
-    console.log("Types:")
-    for (let type of pokedata.types){
-        console.log(`    -${type.type.name}`);
-    }
+  console.log("Name:", pokemon.name);
+  console.log("Height:", pokemon.height);
+  console.log("Weight:", pokemon.weight);
+  console.log("Stats:");
+  for (const stat of pokemon.stats) {
+    console.log(`  -${stat.stat.name}: ${stat.base_stat}`);
+  }
+  console.log("Types:");
+  for (const typeInfo of pokemon.types) {
+    console.log("  -", typeInfo.type.name);
+  }
 }
